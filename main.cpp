@@ -18,7 +18,7 @@ public:
     double a, b, c, rank;
     void calculateRank()
     {
-        double answer = pow(a, 2) + pow(b, 3) - c - 2137;
+        double answer = pow(a, 2) + pow(b, 3) - c * 100 - 25;
         rank = (answer == 0) ? 10000 : 1 / answer;
     }
 };
@@ -27,7 +27,7 @@ int main()
 
 {
 
-    const double MUTATION_RATE = 0.01;
+    const double MUTATION_RATE = 0.1;
     const int POPULATION_SIZE = 100000;
     const int BEST_SAMPLE = 80;
     std::random_device rd;
@@ -43,16 +43,14 @@ int main()
         solutions.push_back(Solution(dist(rd), dist(rd), dist(rd)));
     }
 
-    for (int i = 0; i < BEST_SAMPLE; i++)
-    {
-        bestSolutions.push_back(solutions[i]);
-    }
-
     while (true)
     {
 
-        std::sort(solutions.begin(), solutions.end(), [](Solution a, Solution b)
-                  { return a.rank > b.rank; });
+        // std::sort(solutions.begin(), solutions.end(), [](Solution a, Solution b)
+        //           { return a.rank > b.rank; });
+
+        std::nth_element(solutions.begin(), solutions.begin() + BEST_SAMPLE, solutions.end(), [](Solution a, Solution b)
+                         { return a.rank > b.rank; });
 
         // std::cout << std::setprecision(4) << "Best solution: " << static_cast<int>(solutions[0].rank) << "\t" << solutions[0].a << "\t" << solutions[0].b << "\t" << solutions[0].c << std::endl;
         std::printf("Best solution: %5d   %5.4f   %5.4f   %5.4f   \n", static_cast<int>(solutions[0].rank), solutions[0].a, solutions[0].b, solutions[0].c);
