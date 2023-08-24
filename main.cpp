@@ -38,6 +38,7 @@ int main()
     std::vector<Solution> solutions;
     std::vector<Solution> bestSolutions;
 
+    // Creating the initial population
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
         solutions.push_back(Solution(dist(rd), dist(rd), dist(rd)));
@@ -45,23 +46,22 @@ int main()
 
     while (true)
     {
-
-        // std::sort(solutions.begin(), solutions.end(), [](Solution a, Solution b)
-        //           { return a.rank > b.rank; });
-
+        // Sorting the solutions by rank so that the best ones are at the front
         std::nth_element(solutions.begin(), solutions.begin() + BEST_SAMPLE, solutions.end(), [](Solution a, Solution b)
                          { return a.rank > b.rank; });
 
-        // std::cout << std::setprecision(4) << "Best solution: " << static_cast<int>(solutions[0].rank) << "\t" << solutions[0].a << "\t" << solutions[0].b << "\t" << solutions[0].c << std::endl;
+        // Because of using nth_element the first solution isn't the best one but it's still into the first BEST_SAMPLE solutions
         std::printf("Best solution: %5d   %5.4f   %5.4f   %5.4f   \n", static_cast<int>(solutions[0].rank), solutions[0].a, solutions[0].b, solutions[0].c);
 
         bestSolutions.clear();
+
+        // Copying the best solutions
         for (int i = 0; i < BEST_SAMPLE; i++)
         {
-            // bestSolutions.push_back(solutions[i]);
             bestSolutions.emplace_back(std::move(solutions[i].a), std::move(solutions[i].b), std::move(solutions[i].c));
         }
 
+        // Mutating the best solutions
         for (Solution &s : bestSolutions)
         {
             s.a *= mutationAmount(rd);
@@ -71,9 +71,9 @@ int main()
 
         solutions.clear();
 
+        // Creating new solutions from the best ones using crossover
         for (int i = 0; i < POPULATION_SIZE; i++)
         {
-            // solutions.push_back(Solution(bestSolutions[crossover(rd)].a, bestSolutions[crossover(rd)].b, bestSolutions[crossover(rd)].c));
             solutions.emplace_back(std::move(bestSolutions[crossover(rd)].a), std::move(bestSolutions[crossover(rd)].b), std::move(bestSolutions[crossover(rd)].c));
         }
     }
