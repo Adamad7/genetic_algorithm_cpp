@@ -27,7 +27,7 @@ int main()
 
 {
 
-    const double MUTATION_RATE = 0.03;
+    const double MUTATION_RATE = 0.01;
     const int POPULATION_SIZE = 100000;
     const int BEST_SAMPLE = 80;
     std::random_device rd;
@@ -43,23 +43,25 @@ int main()
         solutions.push_back(Solution(dist(rd), dist(rd), dist(rd)));
     }
 
+    for (int i = 0; i < BEST_SAMPLE; i++)
+    {
+        bestSolutions.push_back(solutions[i]);
+    }
+
     while (true)
     {
-
-        for (Solution &s : solutions)
-        {
-            s.calculateRank();
-        }
 
         std::sort(solutions.begin(), solutions.end(), [](Solution a, Solution b)
                   { return a.rank > b.rank; });
 
-        std::cout << std::setprecision(4) << "Best solution: " << static_cast<int>(solutions[0].rank) << "\t" << solutions[0].a << "\t" << solutions[0].b << "\t" << solutions[0].c << std::endl;
+        // std::cout << std::setprecision(4) << "Best solution: " << static_cast<int>(solutions[0].rank) << "\t" << solutions[0].a << "\t" << solutions[0].b << "\t" << solutions[0].c << std::endl;
+        std::printf("Best solution: %5d   %5.4f   %5.4f   %5.4f   \n", static_cast<int>(solutions[0].rank), solutions[0].a, solutions[0].b, solutions[0].c);
 
         bestSolutions.clear();
         for (int i = 0; i < BEST_SAMPLE; i++)
         {
-            bestSolutions.push_back(solutions[i]);
+            // bestSolutions.push_back(solutions[i]);
+            bestSolutions.emplace_back(std::move(solutions[i].a), std::move(solutions[i].b), std::move(solutions[i].c));
         }
 
         for (Solution &s : bestSolutions)
@@ -73,7 +75,8 @@ int main()
 
         for (int i = 0; i < POPULATION_SIZE; i++)
         {
-            solutions.push_back(Solution(bestSolutions[crossover(rd)].a, bestSolutions[crossover(rd)].b, bestSolutions[crossover(rd)].c));
+            // solutions.push_back(Solution(bestSolutions[crossover(rd)].a, bestSolutions[crossover(rd)].b, bestSolutions[crossover(rd)].c));
+            solutions.emplace_back(std::move(bestSolutions[crossover(rd)].a), std::move(bestSolutions[crossover(rd)].b), std::move(bestSolutions[crossover(rd)].c));
         }
     }
     return 0;
