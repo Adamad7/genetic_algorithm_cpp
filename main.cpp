@@ -8,6 +8,13 @@
 class Solution
 {
 public:
+    Solution(double a, double b, double c, double rank = 0)
+    {
+        this->a = a;
+        this->b = b;
+        this->c = c;
+        calculateRank();
+    };
     double a, b, c, rank;
     void calculateRank()
     {
@@ -33,11 +40,7 @@ int main()
 
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
-        Solution solution;
-        solution.a = dist(rd);
-        solution.b = dist(rd);
-        solution.c = dist(rd);
-        solutions.push_back(solution);
+        solutions.push_back(Solution(dist(rd), dist(rd), dist(rd)));
     }
 
     while (true)
@@ -70,11 +73,7 @@ int main()
 
         for (int i = 0; i < POPULATION_SIZE; i++)
         {
-            Solution solution;
-            solution.a = bestSolutions[crossover(rd)].a;
-            solution.b = bestSolutions[crossover(rd)].b;
-            solution.c = bestSolutions[crossover(rd)].c;
-            solutions.push_back(solution);
+            solutions.push_back(Solution(bestSolutions[crossover(rd)].a, bestSolutions[crossover(rd)].b, bestSolutions[crossover(rd)].c));
         }
     }
     return 0;
